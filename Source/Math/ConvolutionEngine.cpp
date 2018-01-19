@@ -6,7 +6,7 @@
 #include "stdafx.h"
 #include "ConvolutionEngine.h"
 #include "CuDnnFactories.h"
-#include "Mkl2017DnnCommon.h"
+#include "MklDnnCommon.h"
 
 namespace Microsoft { namespace MSR { namespace CNTK {
 
@@ -947,6 +947,11 @@ protected:
 
         bool Supported(const ConvolveGeometry* geometry, bool forward)
         {
+            //TODO: test code for linking with mkldnn.dll, will extend to support dilated convolution with MKL-DNN later
+            mkldnn_primitive_attr_t attr;
+            mkldnn_primitive_attr_create(&attr);
+            mkldnn_primitive_attr_destroy(attr);
+
             //MKL2017 does not support asymmetric padding yet
             if (geometry->IsAsymmetricPadding()) return false;
 

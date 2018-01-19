@@ -168,10 +168,10 @@ endif
 
 ifeq ("$(MATHLIB)","mkl")
   INCLUDEPATH += $(MKL_PATH)/include
-  LIBS_LIST += m iomp5 pthread mklml_intel
+  LIBS_LIST += m iomp5 pthread mklml_intel mkldnn
   MKL_LIB_PATH := $(MKL_PATH)/lib
   LIBPATH += $(MKL_LIB_PATH)
-  COMMON_FLAGS += -DUSE_MKL
+  COMMON_FLAGS += -DUSE_MKL -DUSE_MKLDNN
 endif
 
 ifeq ($(CUDA_GDR),1)

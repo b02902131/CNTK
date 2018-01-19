@@ -6,7 +6,7 @@
 #include "stdafx.h"
 #include "BatchNormalizationEngine.h"
 #include "CuDnnFactories.h"
-#include "Mkl2017DnnCommon.h"
+#include "MklDnnCommon.h"
 
 namespace Microsoft { namespace MSR { namespace CNTK {
 

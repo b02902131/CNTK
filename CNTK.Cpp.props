@@ -56,16 +56,20 @@
 
   <PropertyGroup Condition="!$(IsUWP)">
     <MathLibrary>MKL</MathLibrary>
-    <MathIncludePath>$(MKLML_PATH)\include</MathIncludePath>
+    <MathIncludePath>$(MKL_PATH)\include</MathIncludePath>
     <MathDefine>USE_MKL</MathDefine>
     <!-- Only non-UWP configurations consume PerformanceProfiler -->
     <ReaderLibs>Cntk.PerformanceProfiler-$(CntkComponentVersion).lib;$(ReaderLibs)</ReaderLibs>
-    <MathLibraryName>MKL-ML Library</MathLibraryName>
-    <MathLibraryPath>$(MKLML_PATH)\lib</MathLibraryPath>
+    <MathLibraryName>MKL Library</MathLibraryName>
+    <MathLibraryPath>$(MKL_PATH)\lib</MathLibraryPath>
     <MathLinkLibrary>mklml.lib</MathLinkLibrary>
     <MathDelayLoad>mklml.dll</MathDelayLoad>
     <MathPostBuildCopyPattern>$(MathLibraryPath)\*.dll</MathPostBuildCopyPattern>
-    <UnitTestDlls>$(OutDir)mklml.lib;$(OutDir)libiomp5md.dll;</UnitTestDlls>
+    <HasMklDnn>false</HasMklDnn>
+    <HasMklDnn Condition="Exists('$(MKL_PATH)\include\mkldnn.h')">true</HasMklDnn>
+    <MathDefine Condition="$(HasMklDnn)">$(MathDefine);USE_MKLDNN</MathDefine>
+    <MathLinkLibrary Condition="$(HasMklDnn)">$(MathLinkLibrary);mkldnn.lib</MathLinkLibrary>
+    <MathDelayLoad Condition="$(HasMklDnn)">$(MathDelayLoad);mkldnn.dll</MathDelayLoad>
   </PropertyGroup>
   <PropertyGroup Condition="$(UseZip)">
     <ZipInclude>$(ZLIB_PATH)\include;$(ZLIB_PATH)\lib\libzip\include;</ZipInclude>

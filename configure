@@ -24,7 +24,7 @@ nccl_path=
 nccl_check=include/nccl.h
 
 # MKLML Version
-mklml_version=mklml_lnx_2018.0.1.20171007
+mklml_version=mklml_lnx_2018.0.1.20171227
 
 have_mkl=no
 mkl_path=
