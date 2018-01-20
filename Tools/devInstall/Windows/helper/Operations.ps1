@@ -54,7 +54,7 @@ function OpAnacondaEnv(
      }
 }
 
-function OpBoost160(
+function OpBoost160VS15(
     [parameter(Mandatory=$true)][string] $cache,
     [parameter(Mandatory=$true)][string] $targetFolder)
 {
@@ -96,75 +96,21 @@ function OpCMake362(
         } )
 }
 
-function OpMKLML012
-    ([parameter(Mandatory=$true)][string] $cache,
-    [parameter(Mandatory=$true)][string] $targetFolder)
-{
-    $prodName = "MKLML Version 0.12"
-    $prodFile = "mklml_win_2018.0.1.20171227"
-    $prodSubDir = "mklml"
-    $targetPath = join-path $targetFolder $prodSubDir
-    $targetPathCurrentVersion = join-path $targetPath $prodFile
-    $envVar = "MKLML_PATH";
-    $envValue = $targetPathCurrentVersion
-    $downloadSource = "https://github.com/01org/mkl-dnn/releases/download/v0.12/$prodFile.zip";
-    $expectedHash = "24BAE8D7B22B431A654ACADEA43F2243C46AE6B1E5A73A4A936825F31D284EE4"
-
-    @(  @{ShortName = "MKLDNN012"; Name = $prodName; VerifyInfo = "Checking for $prodName in $targetPathCurrentVersion"; ActionInfo = "Installing $prodName"; 
-          Verification = @( @{Function = "VerifyDirectory"; Path = $targetPathCurrentVersion },
-                            @{Function = "VerifyEnvironmentAndData"; EnvVar = $envVar; Content = $envValue } );
-          Download = @( @{ Function = "Download"; Method = "WebRequest"; Source = $downloadSource; Destination = "$cache\$prodFile.zip"; ExpectedHash = $expectedHash } );
-          Action = @( @{Function = "ExtractAllFromZip"; zipFileName = "$cache\$prodFile.zip"; destination = $targetFolder; destinationFolder = $prodSubDir },
-                      @{Function = "SetEnvironmentVariable"; EnvVar= $envVar; Content = $envValue } );
-         } )
-}
-
 function OpMKLDNN012(
     [parameter(Mandatory=$true)][string] $cache,
-    [parameter(Mandatory=$true)][string] $targetFolder,
-    [parameter(Mandatory=$true)][string] $repoDirectory)
-{
-    # unzip MKL-DNN source in $protoSourceDir = $targetfolder\src\$prodsubdir
-    # create batch file to build MKL-DNN files in $scriptDirectory = $targetFolder\script
-    # the script file can be used to create the compiled MKL-DNN libraries in $targetPath = $targetFolder\$prodSubDir
-
-    $prodName = "MKL-DNN 0.12 Source"
-    $prodSrcSubdir = "mkldnn-0.12"
-    $prodFile = "mkl-dnn-0.12.zip"
-    $prodSubDir =  "mkldnn-0.12"
-    $batchFile = "buildMklDnnVS17.cmd"
-
-    $protoSourceDir = join-path $targetFolder "src"
-    $targetPath = Join-Path $protoSourceDir $prodSrcSubdir
-    $scriptDirectory = join-path $targetFolder "script"
-    $buildDir = join-path $targetFolder $prodSubDir
-    $downloadSource = "https://github.com/01org/mkl-dnn/archive/v0.12.zip"
-    $expectedHash = "5236ECDF92E39A0E33ADBA7A58934361D491733746CABFD0BB681E2BFDE36B47"
-
-    @( @{ShortName = "MKLDNN012"; VerifyInfo = "Checking for $prodName in $targetPath"; ActionInfo = "Installing $prodName"; 
-         Verification = @( @{Function = "VerifyDirectory"; Path = $targetPath } );
-         Download = @( @{ Function = "Download"; Method = "WebRequest"; Source = $downloadSource; Destination = "$cache\$prodFile"; ExpectedHash = $expectedHash} );
-         Action = @( @{Function = "ExtractAllFromZip"; zipFileName = "$cache\$prodFile"; destination = $protoSourceDir; zipSubTree = $prodSrcSubdir; destinationFolder = $prodSrcSubdir },
-                     @{Function = "MakeDirectory"; Path = $scriptDirectory },
-                     @{Function = "CreateBuildSimpleBatch"; FileName = "$scriptDirectory\$batchFile"; SourceDir = $targetPath; TargetDir = $buildDir; RepoDirectory = $repoDirectory } );
-        } )
-}
-
-function OpMKLDNN012Prebuild(
-    [parameter(Mandatory=$true)][string] $cache,
     [parameter(Mandatory=$true)][string] $targetFolder)
 {
-    $prodName = "ProtoBuf 3.1.0 CNTK Prebuild"
-    $prodFile = "protobuf-3.1.0-vs17.zip"
-    $prodSubDir =  "protobuf-3.1.0-vs17"
+    $prodName = "MKLML and MKL-DNN 0.12 CNTK Prebuild"
+    $prodFile = "mklml-mkldnn-0.12.zip"
+    $prodSubDir =  "mklml-mkldnn-0.12"
 
     $targetPath = join-path $targetFolder $prodSubDir
-    $envVar = "PROTOBUF_PATH"
+    $envVar = "MKL_PATH"
     $envValue = $targetPath
-    $downloadSource = "https://cntk.ai/binarydrop/prerequisites/protobuf/protobuf-3.1.0-vs17.zip"
-    $expectedHash = "E3DE52490977E032C2733C157DDED9F60448A7D508ECB90F1DCCB031064C3119"
+    $downloadSource = "https://cntk.ai/binarydrop/prerequisites/mkldnn/mklml-mkldnn-0.12.zip"
+    $expectedHash = "13C3D485CF96C216B6460188CE6E120847F1BB16B9F66A4134E56EB5D3A37857"
 
-    @( @{ShortName = "PROTO310PRE"; VerifyInfo = "Checking for $prodName in $targetPath"; ActionInfo = "Installing $prodName"; 
+    @( @{ShortName = "MKLDNN012"; VerifyInfo = "Checking for $prodName in $targetPath"; ActionInfo = "Installing $prodName"; 
          Verification = @( @{Function = "VerifyDirectory"; Path = $targetPath },
                            @{Function = "VerifyEnvironmentAndData"; EnvVar = $envVar; Content = $envValue } );
          Download = @( @{ Function = "Download"; Method = "WebRequest"; Source = $downloadSource; Destination = "$cache\$prodFile"; ExpectedHash = $expectedHash} );
@@ -270,7 +216,7 @@ function OpOpenCV31(
          } )
 }
 
-function OpProtoBuf310(
+function OpProtoBuf310VS17(
     [parameter(Mandatory=$true)][string] $cache,
     [parameter(Mandatory=$true)][string] $targetFolder,
     [parameter(Mandatory=$true)][string] $repoDirectory)
@@ -290,7 +236,7 @@ function OpProtoBuf310(
     $scriptDirectory = join-path $targetFolder "script"
     $buildDir = join-path $targetFolder $prodSubDir
     $downloadSource = "https://github.com/google/protobuf/archive/v3.1.0.zip"
-    $expectedHash = "C07629F666312E43A4C2415AF77F6442178605A8658D975299C793CB89999212"
+    $expectedHash = "ED0F3215AC60E6AE29B21CBFF53F8876E4CF8B4767FEC525CEF0DA6FDF6A4A73"
 
     @( @{ShortName = "PROTO310"; VerifyInfo = "Checking for $prodName in $targetPath"; ActionInfo = "Installing $prodName"; 
          Verification = @( @{Function = "VerifyDirectory"; Path = $targetPath } );
@@ -301,11 +247,11 @@ function OpProtoBuf310(
         } )
 }
 
-function OpProtoBuf310Prebuild(
+function OpProtoBuf310VS17Prebuild(
     [parameter(Mandatory=$true)][string] $cache,
     [parameter(Mandatory=$true)][string] $targetFolder)
 {
-    $prodName = "ProtoBuf 3.1.0 CNTK Prebuild"
+    $prodName = "ProtoBuf 3.1.0 VS17 CNTK Prebuild"
     $prodFile = "protobuf-3.1.0-vs17.zip"
     $prodSubDir =  "protobuf-3.1.0-vs17"
 
@@ -373,7 +319,7 @@ function OpCheckCuda9
         } )
 }
 
-function OpZlib(
+function OpZlibVS17(
     [parameter(Mandatory=$true)][string] $cache,
     [parameter(Mandatory=$true)][string] $targetFolder,
     [parameter(Mandatory=$true)][string] $repoDirectory)
@@ -403,7 +349,7 @@ function OpZlib(
     $envVar = "ZLIB_PATH"
     $envValue = $targetPath
     
-    @( @{ShortName = "ZLIB"; VerifyInfo = "Checking for $prodName in $sourceCodeDir"; ActionInfo = "Installing $prodName"; 
+    @( @{ShortName = "ZLIBVS17"; VerifyInfo = "Checking for $prodName in $sourceCodeDir"; ActionInfo = "Installing $prodName"; 
          Verification = @( @{Function = "VerifyDirectory"; Path = "$sourceCodeDir\$zlibProdName" },
                            @{Function = "VerifyDirectory"; Path = "$sourceCodeDir\$libzipProdName" },
                            @{Function = "VerifyFile"; Path = "$scriptDirectory\$batchFile" } );
@@ -416,11 +362,11 @@ function OpZlib(
         } )
 }
 
-function OpZlibPrebuild(
+function OpZlibVS17Prebuild(
     [parameter(Mandatory=$true)][string] $cache,
     [parameter(Mandatory=$true)][string] $targetFolder)
 {
-    $prodName = "ZLib CNTK Prebuild"
+    $prodName = "ZLib VS17 CNTK Prebuild"
     $prodFile = "zlib-vs17.zip"
     $prodSubDir =  "zlib-vs17"
 
@@ -429,7 +375,7 @@ function OpZlibPrebuild(
     $envVar = "ZLIB_PATH"
     $envValue = $targetPath
     $downloadSource = "https://cntk.ai/binarydrop/prerequisites/zip/zlib-vs17.zip"
-    $expectedHash = "CA19C228F259DBE0ECDFFC296C705EE270BA9536D8F809C5518F8702E765DDAC"
+    $expectedHash = "40A79007EC792756370C35E6C8585C0C5E8750A44BD2F60DB1EA542AAF398A7B"
 
     @( @{ShortName = "ZLIBPRE"; VerifyInfo = "Checking for $prodName in $targetPath"; ActionInfo = "Installing $prodName"; 
          Verification = @( @{Function = "VerifyDirectory"; Path = $targetPath },

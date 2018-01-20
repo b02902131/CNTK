@@ -2,7 +2,7 @@
 #   CPU only
 #   No 1-bit SGD
 
-FROM ubuntu:14.04
+FROM ubuntu:16.04
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
         autotools-dev \
@@ -36,7 +36,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         # For Kaldi's dependencies
         libapr1 libaprutil1 libltdl-dev libltdl7 libserf-1-1 libsigsegv2 libsvn1 m4 \
         # For Java Bindings
-        openjdk-7-jdk \
+        openjdk-8-jdk \
         # For SWIG
         libpcre3-dev && \
     rm -rf /var/lib/apt/lists/*
@@ -127,6 +127,8 @@ RUN mv /bin/sh /bin/sh.orig && \
    ./extras/check_dependencies.sh && \
    make -j $(nproc) all && \
    cd ../src && \
+   # remove Fermi support as CUDA 9 no longer works on it
+   perl -pi -e 's/-gencode arch=compute_20,code=sm_20//' cudamatrix/Makefile && \
    ./configure --openblas-root=/usr/local/openblas --shared && \
    make -j $(nproc) depend && \
    make -j $(nproc) all && \
@@ -162,12 +164,11 @@ ENV PATH /root/anaconda3/envs/cntk-py35/bin:$PATH
 WORKDIR /cntk
 
 # Build CNTK
-RUN git clone --depth=1 -b $COMMIT https://github.com/Microsoft/CNTK.git . && \
-    MKLML_VERSION_DETAIL=mklml_lnx_2018.0.1.20171007 && \
+RUN git clone --depth=1 --recursive -b $COMMIT https://github.com/Microsoft/CNTK.git . && \
+    MKLML_VERSION_DETAIL=mklml_lnx_2018.0.1.20171227 && \
     CONFIGURE_OPTS="\
       --with-kaldi=${KALDI_PATH} \
       --with-py35-path=/root/anaconda3/envs/cntk-py35" && \
-    git submodule update --init Source/Multiverso && \
     mkdir -p build/cpu/release && \
     cd build/cpu/release && \
     ../../../configure $CONFIGURE_OPTS --with-openblas=/usr/local/openblas && \

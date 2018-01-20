@@ -1,4 +1,11 @@
-FROM nvidia/cuda:8.0-cudnn6-devel-ubuntu14.04
+# Tag: nvidia/cuda:9.0-cudnn7-devel-ubuntu16.04
+# Created: 2017-11-21T06:34:14.675603521Z
+# Label: com.nvidia.build.id: 41212533
+# Label: com.nvidia.build.ref: e0edb5359ecb7bd3d86f0c9bfa18c2260b741ebb
+# Label: com.nvidia.cuda.version: 9.0.176
+# Label: com.nvidia.cudnn.version: 7.0.4.31
+# Ubuntu 16.04.5
+FROM nvidia/cuda@sha256:33add9c50ab76b8f3a92187c0418ed600d5bea27690fda40711122fdc28ce2f4
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
         autotools-dev \
@@ -30,7 +37,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         # For Kaldi's dependencies
         libapr1 libaprutil1 libltdl-dev libltdl7 libserf-1-1 libsigsegv2 libsvn1 m4 \
         # For Java Bindings
-        openjdk-7-jdk \
+        openjdk-8-jdk \
         # For SWIG
         libpcre3-dev && \
     rm -rf /var/lib/apt/lists/*
@@ -123,6 +130,8 @@ RUN mv /bin/sh /bin/sh.orig && \
    ./extras/check_dependencies.sh && \
    make -j $(nproc) all && \
    cd ../src && \
+   # remove Fermi support as CUDA 9 no longer works on it
+   perl -pi -e 's/-gencode arch=compute_20,code=sm_20//' cudamatrix/Makefile && \
    ./configure --openblas-root=/usr/local/openblas --shared && \
    make -j $(nproc) depend && \
    make -j $(nproc) all && \
@@ -157,14 +166,6 @@ RUN CONDA_ENV_PATH=/tmp/conda-linux-cntk-py35-environment.yml; \
 
 ENV PATH /root/anaconda3/envs/cntk-py35/bin:$PATH
 
-# NCCL
-ENV NCCL_VERSION=1.3.0-1
-ENV NCCL_PATH /usr/local/nccl-${NCCL_VERSION}
-RUN git clone --depth=1 -b v${NCCL_VERSION} https://github.com/NVIDIA/nccl.git && \
-    cd nccl && \
-    make CUDA_HOME=/usr/local/cuda PREFIX=$NCCL_PATH install && \
-    rm -rf /nccl
-
 WORKDIR /cntk
 
 RUN mkdir -p /usr/local/cudnn/cuda/include && \
@@ -174,8 +175,8 @@ RUN mkdir -p /usr/local/cudnn/cuda/include && \
     ln -s /usr/local/cuda/lib64/stubs/libnvidia-ml.so /usr/local/cuda/lib64/stubs/libnvidia-ml.so.1
 
 # Build CNTK
-RUN git clone --depth=1 -b $COMMIT https://github.com/Microsoft/CNTK.git . && \
-    MKLML_VERSION_DETAIL=mklml_lnx_2018.0.1.20171007 && \
+RUN git clone --depth=1 --recursive -b $COMMIT https://github.com/Microsoft/CNTK.git . && \
+    MKLML_VERSION_DETAIL=mklml_lnx_2018.0.1.20171227 && \
     CONFIGURE_OPTS="\
       --with-cuda=/usr/local/cuda \
       --with-gdk-include=/usr/local/cuda/include \
@@ -184,7 +185,6 @@ RUN git clone --depth=1 -b $COMMIT https://github.com/Microsoft/CNTK.git . && \
       --with-py35-path=/root/anaconda3/envs/cntk-py35 \
       --with-cudnn=/usr/local/cudnn \
       --with-nccl=${NCCL_PATH}" && \
-    git submodule update --init Source/Multiverso && \
     mkdir -p build/gpu/release && \
     cd build/gpu/release && \
     ../../../configure $CONFIGURE_OPTS --with-openblas=/usr/local/openblas && \

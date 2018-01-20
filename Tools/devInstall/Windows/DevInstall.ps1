@@ -143,14 +143,13 @@ Function main
         $operation += OpCMake362 -cache $localCache
         $operation += OpMSMPI70 -cache $localCache
         $operation += OpMSMPI70SDK -cache $localCache
-        $operation += OpBoost160 -cache $localCache -targetFolder $localDir
+        $operation += OpBoost160VS15 -cache $localCache -targetFolder $localDir
         $operation += OpMKLDNN012 -cache $localCache -targetFolder $localDir
-        $operation += OpMKLDNN012Prebuild -cache $localCache -targetFolder $localDir
         $operation += OpSwig3010 -cache $localCache -targetFolder $localDir
-        $operation += OpProtoBuf310 -cache $localCache -targetFolder $localDir -repoDirectory $CloneDirectory
-        $operation += OpProtoBuf310Prebuild -cache $localCache -targetFolder $localDir
-        $operation += OpZlib -cache $localCache -targetFolder $localDir -repoDirectory $CloneDirectory
-        $operation += OpZlibPrebuild -cache $localCache -targetFolder $localDir
+        $operation += OpProtoBuf310VS17 -cache $localCache -targetFolder $localDir -repoDirectory $CloneDirectory
+        $operation += OpProtoBuf310VS17Prebuild -cache $localCache -targetFolder $localDir
+        $operation += OpZlibVS17 -cache $localCache -targetFolder $localDir -repoDirectory $CloneDirectory
+        $operation += OpZlibVS17Prebuild -cache $localCache -targetFolder $localDir
         $operation += OpOpenCV31 -cache $localCache -targetFolder $localDir
         $operation += OpAnaconda3411 -cache $localCache -AnacondaBasePath $AnacondaBasePath
         if (-not $NoPythonEnvironment) {
