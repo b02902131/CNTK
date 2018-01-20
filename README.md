@@ -4,12 +4,14 @@
 
 ***2018-01-20.*** CNTK support for CUDA 9
 
-CNTK now supports CUDA 9 / cuDNN 7. This also requires an update to build environment to Ubuntu 16.05/GCC 5.4 for Linux, and Visual Studio 2017/VCTools 14.11 for Windows. With CUDA 9, CNTK also added a preview for 16-bit floating point (a.k.a FP16), which would make training on NVidia Volta series faster.
+CNTK now supports CUDA 9 / cuDNN 7. This also requires an update to build environment to Ubuntu 16/GCC 5 for Linux, and Visual Studio 2017/VCTools 14.11 for Windows. With CUDA 9, CNTK also added a preview for 16-bit floating point (a.k.a FP16), which would make training on NVidia Volta series faster.
 
 Please check out the example of FP16 in ResNet50 [here](./Examples/Image/Classification/ResNet/Python/TrainResNet_ImageNet_Distributed.py)
 
-Note:
+Note on FP16 preview:
 * FP16 implementation on CPU is not optimized, and it's not supposed to be used in CPU inference directly. User needs to convert the model to 32-bit floating point before running on CPU.
+* Loss/Criterion for FP16 training needs to be 32bit for accumulation without overflow. Please check the example above.
+* Readers do not have FP16 output unless using numpy to feed data, cast is needed from FP32 to FP16. Please check the example above.
 * FP16 gradient aggregation is currently only implemented on GPU using NCCL2. Distributed training with FP16 with MPI is not supported.
 * FP16 math is a subset of current FP32 implementation. Some model may get Feature Not Implemented exception using FP16.
 * FP16 is currently not supported in BrainScript. Please use Python for FP16.
