@@ -17,17 +17,16 @@ Note on FP16 preview:
 * FP16 is currently not supported in BrainScript. Please use Python for FP16.
 
 To setup build and runtime environment on Windows:
-** 1. Install [Visual Studio 2017](https://www.visualstudio.com/downloads/) with following workloads and components. From command line (use Community version installer as example):
+* Install [Visual Studio 2017](https://www.visualstudio.com/downloads/) with following workloads and components. From command line (use Community version installer as example):
     vs_community.exe --add Microsoft.VisualStudio.Workload.NativeDesktop --add Microsoft.VisualStudio.Workload.ManagedDesktop --add Microsoft.VisualStudio.Workload.Universal --add Microsoft.Component.PythonTools --add Microsoft.VisualStudio.Component.VC.Tools.14.11
-** 2. Install [NVidia CUDA 9](https://developer.nvidia.com/cuda-90-download-archive?target_os=Windows&target_arch=x86_64)
-** 3. From PowerShell, run:
+* Install [NVidia CUDA 9](https://developer.nvidia.com/cuda-90-download-archive?target_os=Windows&target_arch=x86_64)
+* From PowerShell, run:
     [DevInstall.ps1](./Tools/devInstall/Windows/DevInstall.ps1)
-** 4. Start VCTools 14.11 command line, run:
+* Start VCTools 14.11 command line, run:
     cmd /k "%VS2017INSTALLDIR%\VC\Auxiliary\Build\vcvarsall.bat" x64 --vcvars_ver=14.11
-** 5. Open [CNTK.sln](./CNTK.sln) from the VCTools 14.11 command line
+* Open [CNTK.sln](./CNTK.sln) from the VCTools 14.11 command line
 
-To setup build and runtime environment on Linux using docker:
-** Build Unbuntu 16.04 docker image using Dockerfiles [here](./Tools/docker)
+To setup build and runtime environment on Linux, please build Unbuntu 16.04 docker image using Dockerfiles [here](./Tools/docker)
 
 ***2017-12-05.* CNTK 2.3.1**
 Release of Cognitive Toolkit v.2.3.1.

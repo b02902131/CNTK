@@ -30,7 +30,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         # For Kaldi
         python-dev \
         automake \
-        libtool \
+        libtool-bin \
         autoconf \
         subversion \
         # For Kaldi's dependencies

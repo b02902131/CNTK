@@ -50,7 +50,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         # For Kaldi
         python-dev \
         automake \
-        libtool \
+        libtool-bin \
         autoconf \
         subversion \
         # For Kaldi's dependencies
@@ -80,7 +80,7 @@ RUN LIBZIP_VERSION=1.1.2 && \
 
 ENV LD_LIBRARY_PATH /usr/local/lib:$LD_LIBRARY_PATH
 
-RUN wget -q -O - https://github.com/NVlabs/cub/archive/1.4.1.tar.gz | tar -C /usr/local -xzf -
+RUN wget -q -O - https://github.com/NVlabs/cub/archive/1.7.4.tar.gz | tar -C /usr/local -xzf -
 
 RUN OPENCV_VERSION=3.1.0 && \
     wget -q -O - https://github.com/Itseez/opencv/archive/${OPENCV_VERSION}.tar.gz | tar -xzf - && \
